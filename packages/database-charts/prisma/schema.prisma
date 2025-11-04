@@ -1,0 +1,56 @@
+// Charts Database Schema
+// Contains categories, charts, and data points for tracking
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-charts"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ================================================= //
+//       CHARTS FEATURES (Data Tracking)             //
+// ================================================= //
+
+model Category {
+  id          String   @id @default(cuid())
+  userId      String   // FK to User in database-users
+  name        String
+  description String?
+  color       String   @default("#3b82f6") // Hex color
+  icon        String?  // Icon name from lucide-react
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  charts      Chart[]
+}
+
+model Chart {
+  id                String      @id @default(cuid())
+  userId            String      // FK to User in database-users
+  categoryId        String?
+  name              String
+  description       String?
+  chartType         String      @default("trend") // 'trend' or 'record'
+  valueType         String      @default("number") // 'number', 'text', or 'boolean'
+  unit              String?     // e.g., "kg", "cm", "hours"
+  visualizationType String?     @default("line") // 'line', 'bar', or 'area'
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  category          Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  dataPoints        DataPoint[]
+}
+
+model DataPoint {
+  id           String   @id @default(cuid())
+  chartId      String
+  timestamp    DateTime
+  valueNumber  Float?
+  valueText    String?
+  valueBoolean Boolean?
+  notes        String? // Optional notes for this data point
+  createdAt    DateTime @default(now())
+  chart        Chart    @relation(fields: [chartId], references: [id], onDelete: Cascade)
+}

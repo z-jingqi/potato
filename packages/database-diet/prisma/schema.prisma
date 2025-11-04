@@ -1,0 +1,72 @@
+// Diet Database Schema
+// Contains chat conversations, messages, and recipes
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-diet"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ================================================= //
+//          DIET FEATURES (Chat & Recipes)           //
+// ================================================= //
+
+enum RecipeDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  title     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userId    String    // FK to User in database-users
+  messages  Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  role           String       // "system", "user", or "assistant"
+  parts          Json         // Array of UIMessagePart (text, reasoning, tool, file, etc.)
+  metadata       Json?        // Optional metadata (intent, hasRecipe, modelName, etc.)
+  createdAt      DateTime     @default(now())
+  conversationId String
+  recipeId       String?      @unique
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  recipe         Recipe?      @relation("MessageRecipe", fields: [recipeId], references: [id], onDelete: SetNull)
+}
+
+model Recipe {
+  id              String            @id @default(cuid())
+  title           String
+  description     String?
+  ingredients     Json?
+  steps           Json?
+  prepTimeMinutes Int?
+  cookTimeMinutes Int?
+  servings        Int?
+  difficulty      RecipeDifficulty?
+  tags            Json?
+  sourceUrl       String?
+  favoriteCount   Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  message         Message?          @relation("MessageRecipe")
+  favorites       RecipeFavorite[]
+}
+
+model RecipeFavorite {
+  id        String   @id @default(cuid())
+  userId    String   // FK to User in database-users
+  recipeId  String
+  createdAt DateTime @default(now())
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId])
+}

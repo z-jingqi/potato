@@ -1,26 +1,30 @@
 {
-  "name": "potato",
+  "name": "potato-monorepo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "next": "16.0.1"
+    "dev:diet": "pnpm --filter diet dev",
+    "dev:charts": "pnpm --filter charts dev",
+    "build:diet": "pnpm --filter diet build",
+    "build:charts": "pnpm --filter charts build",
+    "build:all": "pnpm -r --filter './apps/*' build",
+    "lint": "pnpm -r lint",
+    "lint:diet": "pnpm --filter diet lint",
+    "lint:charts": "pnpm --filter charts lint",
+    "preview:diet": "pnpm --filter diet preview",
+    "preview:charts": "pnpm --filter charts preview",
+    "pages:build:diet": "pnpm --filter diet pages:build",
+    "pages:build:charts": "pnpm --filter charts pages:build",
+    "deploy:diet": "pnpm --filter diet pages:deploy",
+    "deploy:charts": "pnpm --filter charts pages:deploy",
+    "db:generate": "pnpm --filter '@potato/database-*' db:generate",
+    "db:push": "pnpm --filter '@potato/database-*' db:push",
+    "db:studio:users": "pnpm --filter @potato/database-users db:studio",
+    "db:studio:diet": "pnpm --filter @potato/database-diet db:studio",
+    "db:studio:charts": "pnpm --filter @potato/database-charts db:studio",
+    "clean": "rm -rf node_modules apps/*/node_modules apps/*/.next packages/*/node_modules"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.1"
+    "typescript": "^5"
   }
 }

@@ -1,0 +1,32 @@
+# Cloudflare configuration for Charts App
+name = "potato-charts"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = ".vercel/output/static"
+
+# D1 Database bindings
+# Shared Users database (used by both diet and charts apps)
+[[d1_databases]]
+binding = "DB_USERS"
+database_name = "potato-users"
+database_id = ""  # Add your database ID after creating with: wrangler d1 create potato-users
+
+# Charts-specific database
+[[d1_databases]]
+binding = "DB_CHARTS"
+database_name = "potato-charts"
+database_id = ""  # Add your database ID after creating with: wrangler d1 create potato-charts
+
+# Deployment instructions:
+# 1. Create D1 databases:
+#    wrangler d1 create potato-users (if not already created)
+#    wrangler d1 create potato-charts
+#
+# 2. Copy the database IDs to this file
+#
+# 3. Run migrations:
+#    wrangler d1 execute potato-users --remote --file=../../packages/database-users/prisma/migrations/xxx.sql
+#    wrangler d1 execute potato-charts --remote --file=../../packages/database-charts/prisma/migrations/xxx.sql
+#
+# 4. Build and deploy:
+#    pnpm run pages:build
+#    pnpm run pages:deploy
