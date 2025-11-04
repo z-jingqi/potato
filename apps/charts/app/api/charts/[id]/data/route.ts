@@ -5,15 +5,16 @@ import { createDataPointSchema } from "@/lib/validations/schemas";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await requireAuth();
+    const { id } = await params;
 
     // Verify chart belongs to user
     const chart = await chartsDb.chart.findFirst({
       where: {
-        id: params.id,
+        id,
         userId
       },
     });
@@ -23,7 +24,7 @@ export async function GET(
     }
 
     const points = await chartsDb.dataPoint.findMany({
-      where: { chartId: params.id },
+      where: { chartId: id },
       orderBy: { timestamp: "desc" },
     });
 
@@ -41,16 +42,17 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await requireAuth();
     const body = await request.json();
+    const { id } = await params;
 
     // Verify chart belongs to user
     const chart = await chartsDb.chart.findFirst({
       where: {
-        id: params.id,
+        id,
         userId
       },
     });
@@ -63,7 +65,7 @@ export async function POST(
 
     const dataPoint = await chartsDb.dataPoint.create({
       data: {
-        chartId: params.id,
+        chartId: id,
         ...validatedData,
       },
     });

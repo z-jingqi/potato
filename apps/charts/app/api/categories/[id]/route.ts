@@ -5,17 +5,18 @@ import { updateCategorySchema } from "@/lib/validations/schemas";
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await requireAuth();
     const body = await request.json();
+    const { id } = await params;
 
     const validatedData = updateCategorySchema.parse(body);
 
     const category = await chartsDb.category.updateMany({
       where: {
-        id: params.id,
+        id,
         userId
       },
       data: {
@@ -30,7 +31,7 @@ export async function PUT(
 
     // Fetch the updated category
     const updatedCategory = await chartsDb.category.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json(updatedCategory);
@@ -47,14 +48,15 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await requireAuth();
+    const { id } = await params;
 
     const deleted = await chartsDb.category.deleteMany({
       where: {
-        id: params.id,
+        id,
         userId
       },
     });
