@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { registerSchema } from "@potato/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,53 +15,52 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 
+// Extend the schema with confirmPassword for frontend validation
+const formSchema = registerSchema.extend({
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
+type FormData = z.infer<typeof formSchema>;
+
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    confirmPassword: "",
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     setError("");
-
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      setIsLoading(false);
-      return;
-    }
-
-    // Validate password length
-    if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters");
-      setIsLoading(false);
-      return;
-    }
 
     try {
       const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.username, // Using username as email/identifier
-          password: formData.password,
-          name: formData.username,
+          username: data.username,
+          password: data.password,
+          email: data.email,
+          name: data.name,
         }),
       });
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (response.ok) {
         // Registration successful, automatically sign in
         const signInResult = await signIn("credentials", {
-          email: formData.username,
-          password: formData.password,
+          username: data.username,
+          password: data.password,
           redirect: false,
         });
 
@@ -70,7 +73,7 @@ export default function RegisterPage() {
           router.refresh();
         }
       } else {
-        setError(data.error || "Registration failed");
+        setError(result.error || "Registration failed");
       }
     } catch (error) {
       setError("An error occurred during registration");
@@ -97,30 +100,32 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your username"
-                value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                required
+                placeholder="3-20 characters, letters and numbers"
+                {...register("username")}
                 autoComplete="username"
               />
+              {errors.username && (
+                <p className="text-sm text-destructive">{errors.username.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <PasswordInput
                 id="password"
-                placeholder="At least 8 characters"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
+                placeholder="6-20 characters"
+                {...register("password")}
                 autoComplete="new-password"
               />
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -128,11 +133,12 @@ export default function RegisterPage() {
               <PasswordInput
                 id="confirmPassword"
                 placeholder="Re-enter your password"
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                required
+                {...register("confirmPassword")}
                 autoComplete="new-password"
               />
+              {errors.confirmPassword && (
+                <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+              )}
             </div>
 
             {error && (

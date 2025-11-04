@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../node_modules/.prisma/client-users'
 
 declare global {
   // eslint-disable-next-line no-var
@@ -11,4 +11,4 @@ if (process.env.NODE_ENV !== 'production') {
   global.prismaUsers = usersDb
 }
 
-export * from '@prisma/client'
+export * from '../node_modules/.prisma/client-users'

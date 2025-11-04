@@ -1,17 +1,14 @@
 {
-  "name": "@potato/auth",
+  "name": "@potato/ai",
   "version": "0.1.0",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "dependencies": {
-    "@potato/database-users": "workspace:*",
-    "bcryptjs": "^2.4.3",
-    "next-auth": "^4.24.13",
-    "zod": "^4.1.12"
+    "@openrouter/ai-sdk-provider": "^1.2.0",
+    "ai": "^5.0.80"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^24.10.0",
     "typescript": "^5"
   }

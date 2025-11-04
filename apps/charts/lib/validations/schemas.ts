@@ -33,10 +33,3 @@ export const createDataPointSchema = z.object({
 });
 
 export const updateDataPointSchema = createDataPointSchema.partial();
-
-// User schemas
-export const registerUserSchema = z.object({
-  email: z.string().min(1, "Username is required").max(100),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  name: z.string().max(100).optional(),
-});

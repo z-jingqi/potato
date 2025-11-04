@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { registerSchema } from "@potato/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,26 +20,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const registerSchema = z
-  .object({
-    username: z
-      .string()
-      .min(3, "用户名至少3个字符")
-      .max(20, "用户名最多20个字符")
-      .regex(/^[a-zA-Z0-9_]+$/, "用户名只能包含字母、数字和下划线"),
-    name: z.string().min(1, "姓名不能为空").max(50, "姓名最多50个字符"),
-    password: z
-      .string()
-      .min(6, "密码至少6个字符")
-      .max(100, "密码最多100个字符"),
-    confirmPassword: z.string().min(1, "请确认密码"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "两次输入的密码不一致",
-    path: ["confirmPassword"],
-  });
+// Extend shared schema with confirmPassword for frontend validation
+const formSchema = registerSchema.extend({
+  confirmPassword: z.string().min(1, "请确认密码"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "两次输入的密码不一致",
+  path: ["confirmPassword"],
+});
 
-type RegisterFormData = z.infer<typeof registerSchema>;
+type RegisterFormData = z.infer<typeof formSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -50,7 +40,7 @@ export default function RegisterPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(formSchema),
   });
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -110,7 +100,7 @@ export default function RegisterPage() {
               <Label htmlFor="username">用户名</Label>
               <Input
                 id="username"
-                placeholder="3-20个字符，字母数字下划线"
+                placeholder="3-20个字符，仅字母和数字"
                 {...register("username")}
                 disabled={isSubmitting || success}
               />
@@ -122,7 +112,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="name">姓名</Label>
+              <Label htmlFor="name">姓名（可选）</Label>
               <Input
                 id="name"
                 placeholder="请输入您的姓名"
@@ -139,7 +129,7 @@ export default function RegisterPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="至少6个字符"
+                placeholder="6-20个字符，字母数字或符号"
                 {...register("password")}
                 disabled={isSubmitting || success}
               />

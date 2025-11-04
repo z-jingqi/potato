@@ -1,6 +1,4 @@
-import { convertToModelMessages, streamText } from "ai";
-import { openrouterProvider } from "@/lib/ai/openrouter";
-import { AI_CONFIG } from "@/config/ai";
+import { createStreamingResponse } from "@potato/ai";
 
 type ChatRequestBody = {
   messages: unknown;
@@ -21,12 +19,9 @@ export async function handleChatRequest(request: Request): Promise<Response> {
     return Response.json({ error: "Missing messages array" }, { status: 400 });
   }
 
-  const result = streamText({
-    model: openrouterProvider.chat(AI_CONFIG.openrouter.defaultModel),
-    messages: convertToModelMessages(messages),
+  return createStreamingResponse({
+    messages,
     system:
       "You are DietAI, a friendly cooking assistant. Provide concise and helpful answers.",
   });
-
-  return result.toUIMessageStreamResponse();
 }

@@ -8,7 +8,7 @@
     "build:diet": "pnpm --filter diet build",
     "build:charts": "pnpm --filter charts build",
     "build:all": "pnpm -r --filter './apps/*' build",
-    "lint": "pnpm -r lint",
+    "lint": "eslint .",
     "lint:diet": "pnpm --filter diet lint",
     "lint:charts": "pnpm --filter charts lint",
     "preview:diet": "pnpm --filter diet preview",
@@ -25,6 +25,10 @@
     "clean": "rm -rf node_modules apps/*/node_modules apps/*/.next packages/*/node_modules"
   },
   "devDependencies": {
-    "typescript": "^5"
+    "typescript": "^5",
+    "eslint": "^9",
+    "eslint-config-next": "^16.0.1",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0"
   }
 }

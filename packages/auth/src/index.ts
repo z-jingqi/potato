@@ -113,5 +113,61 @@ export async function verifyPassword(
   return bcrypt.compare(password, hashedPassword)
 }
 
+/**
+ * Register a new user
+ * Username and password are required
+ */
+export async function registerUser(data: {
+  username: string
+  password: string
+  email?: string
+  name?: string
+}) {
+  // Check if username already exists
+  const existingUser = await usersDb.user.findUnique({
+    where: { username: data.username },
+  })
+
+  if (existingUser) {
+    throw new Error("Username already exists")
+  }
+
+  // Check if email already exists (if provided)
+  if (data.email) {
+    const existingEmail = await usersDb.user.findUnique({
+      where: { email: data.email },
+    })
+
+    if (existingEmail) {
+      throw new Error("Email already exists")
+    }
+  }
+
+  // Hash password
+  const hashedPassword = await hashPassword(data.password)
+
+  // Create user
+  const user = await usersDb.user.create({
+    data: {
+      username: data.username,
+      email: data.email,
+      password: hashedPassword,
+      name: data.name,
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      name: true,
+      createdAt: true,
+    },
+  })
+
+  return user
+}
+
 // Export types
 export type { NextAuthOptions, Session } from "next-auth"
+
+// Export validation schemas
+export * from "./validations"

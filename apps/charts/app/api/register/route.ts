@@ -1,53 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
-import { hashPassword } from "@potato/auth";
-import { usersDb } from "@potato/database-users";
-import { registerUserSchema } from "@/lib/validations/schemas";
+import { registerUser, registerSchema } from "@potato/auth";
+import { z } from "zod";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const validatedData = registerUserSchema.parse(body);
 
-    // Check if user already exists
-    const existingUser = await usersDb.user.findUnique({
-      where: { email: validatedData.email },
-    });
+    // Validate input
+    const validatedData = registerSchema.parse(body);
 
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "Username already exists" },
-        { status: 400 }
-      );
-    }
-
-    // Hash password
-    const hashedPassword = await hashPassword(validatedData.password);
-
-    // Create user
-    const user = await usersDb.user.create({
-      data: {
-        email: validatedData.email,
-        password: hashedPassword,
-        name: validatedData.name,
-      },
+    // Register user using shared function
+    const user = await registerUser({
+      username: validatedData.username,
+      email: validatedData.email,
+      password: validatedData.password,
+      name: validatedData.name,
     });
 
     return NextResponse.json(
-      { message: "User created successfully", userId: user.id },
+      { message: "User created successfully", user },
       { status: 201 }
     );
-  } catch (error: any) {
-    // Handle Zod validation errors
-    if (error?.errors) {
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const firstError = error.issues[0];
       return NextResponse.json(
-        { error: error.errors[0]?.message || "Invalid request data" },
+        { error: firstError?.message || "Validation failed" },
         { status: 400 }
       );
     }
 
+    console.error("[POST /api/register] Error:", error);
+
+    // Handle specific registration errors
+    if (error instanceof Error) {
+      if (error.message.includes("already exists")) {
+        return NextResponse.json(
+          { error: error.message },
+          { status: 400 }
+        );
+      }
+    }
+
     return NextResponse.json(
-      { error: "Invalid request data" },
-      { status: 400 }
+      { error: "Registration failed, please try again" },
+      { status: 500 }
     );
   }
 }

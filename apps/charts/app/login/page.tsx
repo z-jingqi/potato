@@ -35,7 +35,7 @@ export default function LoginPage() {
 
     try {
       const result = await signIn("credentials", {
-        email: formData.username, // Using username as email identifier
+        username: formData.username,
         password: formData.password,
         redirect: false,
       });

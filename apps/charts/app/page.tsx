@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@potato/auth";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
