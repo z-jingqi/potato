@@ -1,0 +1,3 @@
+{
+  "extends": "@potato/typescript-config/base.json"
+}
