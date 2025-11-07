@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@potato/ui/components/button";
 import { LogOut } from "lucide-react";
 
 export function UserMenu() {

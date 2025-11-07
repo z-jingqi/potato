@@ -1,8 +1,29 @@
 import { getServerSession } from "next-auth"
-import type { NextAuthOptions, User } from "next-auth"
+import type { NextAuthOptions, User, DefaultSession } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { usersDb } from "@potato/database-users"
+
+// Extend next-auth types
+declare module "next-auth" {
+  interface User {
+    username?: string
+  }
+
+  interface Session {
+    user: {
+      id?: string
+      username?: string
+    } & DefaultSession["user"]
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string
+    username?: string
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -54,14 +75,14 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.username = (user as any).username
+        token.username = user.username
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
-        ;(session.user as any).username = token.username
+        session.user.id = token.id
+        session.user.username = token.username
       }
       return session
     },

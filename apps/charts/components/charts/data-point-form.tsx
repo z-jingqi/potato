@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@potato/ui/components/button";
+import { Input } from "@potato/ui/components/input";
+import { Label } from "@potato/ui/components/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@potato/ui/components/select";
 import type { ChartWithData } from "@/types";
 
 interface DataPointFormProps {

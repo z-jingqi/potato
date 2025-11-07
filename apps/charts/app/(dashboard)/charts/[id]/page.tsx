@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useChart } from "@/lib/hooks/use-charts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@potato/ui/components/card";
+import { Button } from "@potato/ui/components/button";
 import { Plus } from "lucide-react";
 import { format } from "date-fns";
 import {

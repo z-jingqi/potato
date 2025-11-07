@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
+import type { AuthOptions } from "next-auth";
 import { authOptions } from "@potato/auth";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions as AuthOptions);
 
   // If user is already logged in, redirect to charts
   if (session) {

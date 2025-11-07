@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@potato/ui/components/button";
 import { ArrowLeft } from "lucide-react";
 
 interface ChartHeaderProps {

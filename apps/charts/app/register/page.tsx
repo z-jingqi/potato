@@ -8,11 +8,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { registerSchema } from "@potato/auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@potato/ui/components/card";
+import { Button } from "@potato/ui/components/button";
+import { Input } from "@potato/ui/components/input";
+import { PasswordInput } from "@potato/ui/components/password-input";
+import { Label } from "@potato/ui/components/label";
 import { ArrowLeft } from "lucide-react";
 
 // Extend the schema with confirmPassword for frontend validation

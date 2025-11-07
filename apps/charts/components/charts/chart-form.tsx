@@ -3,16 +3,16 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@potato/ui/components/button";
+import { Input } from "@potato/ui/components/input";
+import { Label } from "@potato/ui/components/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@potato/ui/components/select";
 import Link from "next/link";
 
 const chartFormSchema = z.object({

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BarChart3, FolderKanban, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@potato/ui/components/button";
 import { UserMenu } from "@/components/user-menu";
 
 export default function DashboardLayout({

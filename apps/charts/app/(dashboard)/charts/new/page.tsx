@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@potato/ui/components/card";
+import { Button } from "@potato/ui/components/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ChartForm } from "@/components/charts";
