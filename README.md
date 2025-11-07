@@ -184,71 +184,59 @@ import { cn } from '@potato/ui'
 
 ## ☁️ Cloudflare Deployment
 
-### Prerequisites
-1. Install Wrangler CLI: `npm install -g wrangler`
-2. Login to Cloudflare: `wrangler login`
+Both apps can be deployed to Cloudflare Pages with D1 databases using **two different methods**:
 
-### Create D1 Databases
+### Method 1: Git Integration (Recommended for Production)
+
+**Automatic deployments** when you push to GitHub/GitLab.
+
+**📚 See [DEPLOYMENT-GIT.md](./DEPLOYMENT-GIT.md)** for:
+- Connecting your repository to Cloudflare Pages
+- Automatic deployments on git push
+- Preview deployments for Pull Requests
+- Build configuration for monorepo
+- Managing multiple apps from one repository
+
+**Best for:**
+- ✅ Production deployments
+- ✅ Team collaboration
+- ✅ PR previews
+- ✅ Automated CI/CD
+
+### Method 2: Manual (Wrangler CLI)
+
+**Manual deployments** using the command line.
+
+**📚 See [DEPLOYMENT.md](./DEPLOYMENT.md)** for:
+- Database setup and migrations
+- Environment variables configuration
+- Step-by-step deployment guides
+- Wrangler CLI commands
+- Troubleshooting tips
+
+**Best for:**
+- ✅ Quick testing
+- ✅ Local development
+- ✅ One-off deployments
+
+### Quick Start
 
 ```bash
-# Create databases
+# 1. Create D1 databases (required for both methods)
 wrangler d1 create potato-users
 wrangler d1 create potato-diet
 wrangler d1 create potato-charts
 
-# Copy the database IDs to wrangler.toml files
-```
+# 2. Choose your deployment method:
 
-### Update `wrangler.toml`
+# Option A: Git Integration (see DEPLOYMENT-GIT.md)
+# - Connect repo in Cloudflare dashboard
+# - Configure build settings
+# - Push to deploy
 
-**apps/diet/wrangler.toml:**
-```toml
-[[d1_databases]]
-binding = "DB_USERS"
-database_name = "potato-users"
-database_id = "your-database-id-here"
-
-[[d1_databases]]
-binding = "DB_DIET"
-database_name = "potato-diet"
-database_id = "your-database-id-here"
-```
-
-**apps/charts/wrangler.toml:**
-```toml
-[[d1_databases]]
-binding = "DB_USERS"
-database_name = "potato-users"
-database_id = "your-database-id-here"
-
-[[d1_databases]]
-binding = "DB_CHARTS"
-database_name = "potato-charts"
-database_id = "your-database-id-here"
-```
-
-### Run Migrations
-
-```bash
-# Generate migrations
-cd packages/database-users && pnpm prisma migrate dev --name init
-cd packages/database-diet && pnpm prisma migrate dev --name init
-cd packages/database-charts && pnpm prisma migrate dev --name init
-
-# Apply to D1 (after generating SQL files)
-wrangler d1 execute potato-users --remote --file=packages/database-users/prisma/migrations/xxx/migration.sql
-wrangler d1 execute potato-diet --remote --file=packages/database-diet/prisma/migrations/xxx/migration.sql
-wrangler d1 execute potato-charts --remote --file=packages/database-charts/prisma/migrations/xxx/migration.sql
-```
-
-### Deploy
-
-```bash
-# Deploy diet app
-pnpm deploy:diet
-
-# Deploy charts app
-pnpm deploy:charts
+# Option B: Manual Deployment (see DEPLOYMENT.md)
+pnpm deploy:diet     # Deploy diet app
+pnpm deploy:charts   # Deploy charts app
 ```
 
 ## 🏗️ Tech Stack
