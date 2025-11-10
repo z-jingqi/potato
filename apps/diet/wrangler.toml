@@ -1,7 +1,7 @@
 # Cloudflare configuration for Diet App
 name = "potato-diet"
 compatibility_date = "2025-01-01"
-pages_build_output_dir = ".vercel/output/static"
+pages_build_output_dir = ".next"
 
 # Environment variables
 [vars]

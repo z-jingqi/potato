@@ -124,7 +124,7 @@ Create environment-specific configurations:
 ```toml
 name = "potato-charts"
 compatibility_date = "2025-01-01"
-pages_build_output_dir = ".vercel/output/static"
+pages_build_output_dir = ".next"
 
 # Default (Production) bindings
 [[d1_databases]]
@@ -221,14 +221,14 @@ Projects:
 #### Production Project:
 - **Name**: `potato-charts`
 - **Production branch**: `main`
-- **Build command**: `cd apps/charts && npx @cloudflare/next-on-pages@latest`
-- **Output directory**: `apps/charts/.vercel/output/static`
+- **Build command**: `pnpm install && cd apps/charts && pnpm build`
+- **Output directory**: `apps/charts/.next`
 
 #### Development Project:
 - **Name**: `potato-charts-dev`
 - **Production branch**: `develop`
-- **Build command**: `cd apps/charts && npx @cloudflare/next-on-pages@latest`
-- **Output directory**: `apps/charts/.vercel/output/static`
+- **Build command**: `pnpm install && cd apps/charts && pnpm build`
+- **Output directory**: `apps/charts/.next`
 
 ### Step 2: Configure Separate Databases
 
@@ -462,8 +462,8 @@ wrangler d1 create potato-charts-dev
 2. **Configure build**:
    - Project name: `potato-charts`
    - Production branch: `main`
-   - Build command: `cd apps/charts && npx @cloudflare/next-on-pages@latest`
-   - Build output: `apps/charts/.vercel/output/static`
+   - Build command: `pnpm install && cd apps/charts && pnpm build`
+   - Build output: `apps/charts/.next`
 
 ### Step 4: Configure D1 Bindings
 

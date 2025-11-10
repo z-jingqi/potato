@@ -231,7 +231,7 @@ pnpm build:charts
 pnpm pages:build:charts
 ```
 
-This creates the `.vercel/output/static` directory with the Cloudflare-compatible build.
+This creates the `.next` directory with the Next.js build output.
 
 ### Step 3: Deploy to Cloudflare Pages
 

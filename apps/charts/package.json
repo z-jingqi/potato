@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "pages:deploy": "pnpm run pages:build && wrangler pages deploy .vercel/output/static",
-    "preview": "npx @cloudflare/next-on-pages && wrangler pages dev .vercel/output/static"
+    "pages:build": "next build",
+    "pages:deploy": "pnpm run pages:build && wrangler pages deploy .next",
+    "preview": "pnpm run pages:build && wrangler pages dev .next"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -38,7 +38,6 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.16",
     "@tailwindcss/postcss": "^4.1.16",
     "@types/node": "^20",
     "@types/react": "^19",

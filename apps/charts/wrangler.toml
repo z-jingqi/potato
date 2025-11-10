@@ -1,7 +1,7 @@
 # Cloudflare configuration for Charts App
 name = "potato-charts"
 compatibility_date = "2025-01-01"
-pages_build_output_dir = ".vercel/output/static"
+pages_build_output_dir = ".next"
 
 # D1 Database bindings
 # Shared Users database (used by both diet and charts apps)
