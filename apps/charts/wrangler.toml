@@ -4,6 +4,7 @@ compatibility_date = "2025-01-01"
 pages_build_output_dir = ".next"
 
 # D1 Database bindings
+# Production environment (default)
 # Shared Users database (used by both diet and charts apps)
 [[d1_databases]]
 binding = "DB_USERS"
@@ -15,6 +16,20 @@ database_id = "f347cb96-37c2-42b8-9187-e3dd90509d35"  # Add your database ID aft
 binding = "DB_CHARTS"
 database_name = "potato-charts"
 database_id = "19bc6396-4b23-439f-b4c6-cf5a5bd57ca1"  # Add your database ID after creating with: wrangler d1 create potato-charts
+
+# Development environment
+# Note: For Cloudflare Pages Git integration, create a separate project for dev environment
+# This configuration is for local development and CLI deployment reference
+[env.development]
+[[env.development.d1_databases]]
+binding = "DB_USERS"
+database_name = "potato-users-dev"
+database_id = "89561997-1a56-43cb-9dcc-814f700e8e6e"  # Add your dev database ID: wrangler d1 create potato-users-dev
+
+[[env.development.d1_databases]]
+binding = "DB_CHARTS"
+database_name = "potato-charts-dev"
+database_id = "7b1f249e-74d8-4621-b17c-cff14e13d246"  # Add your dev database ID: wrangler d1 create potato-charts-dev
 
 # Deployment instructions:
 # 1. Create D1 databases:

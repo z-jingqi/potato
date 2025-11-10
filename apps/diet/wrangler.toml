@@ -10,6 +10,7 @@ OPENROUTER_DEFAULT_MODEL = "openai/gpt-oss-20b:free"
 OPENROUTER_RECIPE_MODEL = "minimax/minimax-m2:free"
 
 # D1 Database bindings
+# Production environment (default)
 # Shared Users database (used by both diet and charts apps)
 [[d1_databases]]
 binding = "DB_USERS"
@@ -21,6 +22,20 @@ database_id = "f347cb96-37c2-42b8-9187-e3dd90509d35"  # Add your database ID aft
 binding = "DB_DIET"
 database_name = "potato-diet"
 database_id = "7d7e5470-98ef-4643-973b-ad432457aff7"  # Add your database ID after creating with: wrangler d1 create potato-diet
+
+# Development environment
+# Note: For Cloudflare Pages Git integration, create a separate project for dev environment
+# This configuration is for local development and CLI deployment reference
+[env.development]
+[[env.development.d1_databases]]
+binding = "DB_USERS"
+database_name = "potato-users-dev"
+database_id = "89561997-1a56-43cb-9dcc-814f700e8e6e"  # Add your dev database ID: wrangler d1 create potato-users-dev
+
+[[env.development.d1_databases]]
+binding = "DB_DIET"
+database_name = "potato-diet-dev"
+database_id = "17200b8e-4b77-4f6a-a9ef-9382439937ac"  # Add your dev database ID: wrangler d1 create potato-diet-dev
 
 # Deployment instructions:
 # 1. Create D1 databases:
