@@ -8,13 +8,13 @@ pages_build_output_dir = ".next"
 [[d1_databases]]
 binding = "DB_USERS"
 database_name = "potato-users"
-database_id = ""  # Add your database ID after creating with: wrangler d1 create potato-users
+database_id = "f347cb96-37c2-42b8-9187-e3dd90509d35"  # Add your database ID after creating with: wrangler d1 create potato-users
 
 # Charts-specific database
 [[d1_databases]]
 binding = "DB_CHARTS"
 database_name = "potato-charts"
-database_id = ""  # Add your database ID after creating with: wrangler d1 create potato-charts
+database_id = "19bc6396-4b23-439f-b4c6-cf5a5bd57ca1"  # Add your database ID after creating with: wrangler d1 create potato-charts
 
 # Deployment instructions:
 # 1. Create D1 databases:

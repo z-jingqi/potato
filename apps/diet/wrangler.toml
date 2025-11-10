@@ -14,13 +14,13 @@ OPENROUTER_RECIPE_MODEL = "minimax/minimax-m2:free"
 [[d1_databases]]
 binding = "DB_USERS"
 database_name = "potato-users"
-database_id = ""  # Add your database ID after creating with: wrangler d1 create potato-users
+database_id = "f347cb96-37c2-42b8-9187-e3dd90509d35"  # Add your database ID after creating with: wrangler d1 create potato-users
 
 # Diet-specific database
 [[d1_databases]]
 binding = "DB_DIET"
 database_name = "potato-diet"
-database_id = ""  # Add your database ID after creating with: wrangler d1 create potato-diet
+database_id = "7d7e5470-98ef-4643-973b-ad432457aff7"  # Add your database ID after creating with: wrangler d1 create potato-diet
 
 # Deployment instructions:
 # 1. Create D1 databases:
