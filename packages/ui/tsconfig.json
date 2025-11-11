@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@workspace/ui/*": ["./src/*"]
+      "@potato/ui/*": ["./src/*"]
     }
   },
   "include": ["."],

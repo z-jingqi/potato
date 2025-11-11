@@ -1,0 +1,22 @@
+{
+  "name": "@potato/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config.ts",
+    "./utils": "./src/utils.ts"
+  },
+  "dependencies": {
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "@potato/database-users": "workspace:*",
+    "bcryptjs": "^2.4.3",
+    "next-auth": "^4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@workspace/typescript-config": "workspace:*",
+    "typescript": "^5.9.2"
+  }
+}

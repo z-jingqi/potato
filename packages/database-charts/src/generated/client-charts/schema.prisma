@@ -1,0 +1,53 @@
+// Prisma schema for charts-specific database
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/client-charts"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Chart {
+  id          String   @id @default(uuid())
+  userId      String // Reference to user from database-users
+  title       String
+  description String?
+  type        String // bar, line, pie, etc.
+  data        String // JSON string of chart data
+  config      String? // JSON string of chart configuration
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@map("charts")
+}
+
+model ChartData {
+  id        String   @id @default(uuid())
+  chartId   String
+  label     String
+  value     Float
+  metadata  String? // JSON string for additional data
+  createdAt DateTime @default(now())
+
+  @@index([chartId])
+  @@map("chart_data")
+}
+
+model AIAnalysis {
+  id        String   @id @default(uuid())
+  chartId   String
+  userId    String
+  query     String // User's question/prompt
+  response  String // AI's analysis
+  model     String // AI model used
+  createdAt DateTime @default(now())
+
+  @@index([chartId])
+  @@index([userId])
+  @@map("ai_analysis")
+}
