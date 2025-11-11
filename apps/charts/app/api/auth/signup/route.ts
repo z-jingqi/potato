@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUsersDatabase } from '@/lib/db';
 import { hashPassword } from '@potato/auth/utils';
 
-export const runtime = 'edge';
-
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as { username?: string; password?: string };

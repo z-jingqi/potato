@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { createAIClient, AI_MODELS } from '@potato/ai';
 
-export const runtime = 'edge';
-
 export async function POST(request: NextRequest) {
   try {
     // Check authentication

@@ -21,6 +21,12 @@ coverage
 # Vercel
 .vercel
 
+# Cloudflare
+.dev.vars
+.wrangler/
+wrangler.toml.backup
+.open-next/
+
 # Build Outputs
 .next/
 out/
