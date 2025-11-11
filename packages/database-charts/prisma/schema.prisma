@@ -10,43 +10,56 @@ datasource db {
   url      = env("DATABASE_URL_CHARTS")
 }
 
-model Chart {
+// 数据集合/项目
+model Collection {
   id          String   @id @default(uuid())
-  userId      String   // Reference to user from database-users
-  title       String
+  userId      String
+  name        String
   description String?
-  type        String   // bar, line, pie, etc.
-  data        String   // JSON string of chart data
-  config      String?  // JSON string of chart configuration
+  icon        String?
+  
+  records     Record[]
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([userId])
-  @@map("charts")
+  @@map("collections")
 }
 
-model ChartData {
-  id        String   @id @default(uuid())
-  chartId   String
-  label     String
-  value     Float
-  metadata  String?  // JSON string for additional data
-  createdAt DateTime @default(now())
+// 数据记录
+model Record {
+  id           String     @id @default(uuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  
+  recordDate   DateTime
+  data         String
+  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
-  @@index([chartId])
-  @@map("chart_data")
+  @@index([collectionId])
+  @@index([recordDate])
+  @@map("records")
 }
 
+// AI 分析
 model AIAnalysis {
-  id        String   @id @default(uuid())
-  chartId   String
-  userId    String
-  query     String   // User's question/prompt
-  response  String   // AI's analysis
-  model     String   // AI model used
-  createdAt DateTime @default(now())
+  id            String   @id @default(uuid())
+  userId        String
+  
+  collectionIds String                              // JSON array of collection IDs
+  
+  query         String
+  response      String
+  context       String?
+  analysisType  String?
+  model         String
+  
+  createdAt     DateTime @default(now())
 
-  @@index([chartId])
   @@index([userId])
+  @@index([collectionIds])
   @@map("ai_analysis")
 }
