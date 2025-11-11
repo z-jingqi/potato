@@ -33,6 +33,10 @@ out/
 build
 dist
 
+# Prisma
+**/generated/
+*.db
+*.db-journal
 
 # Debug
 npm-debug.log*
