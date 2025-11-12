@@ -8,7 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@potato/ui/components/card';
-import { BarChart3, MessageSquare, FileText } from 'lucide-react';
+import { BarChart3, MessageSquare, FileText, Plus, Edit2 } from 'lucide-react';
+import Link from 'next/link';
+import { CollectionsService } from '@/lib/services';
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -16,6 +18,9 @@ export default async function DashboardPage() {
   if (!session?.user) {
     redirect('/login');
   }
+
+  // Fetch user's collections using the service layer
+  const collections = await CollectionsService.getCollections(session.user.id);
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,7 +70,12 @@ export default async function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full">New Chart</Button>
+                <Link href="/dashboard/collections/new">
+                  <Button className="w-full">
+                    <Plus className="w-4 h-4 mr-2" />
+                    New Chart
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
@@ -125,22 +135,83 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Empty State for Charts */}
+          {/* Collections List */}
           <div className="mt-8">
             <Card>
               <CardHeader>
-                <CardTitle>Recent Charts</CardTitle>
-                <CardDescription>Your recently created charts will appear here</CardDescription>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div>
+                    <CardTitle>My Collections</CardTitle>
+                    <CardDescription>Your data collections and charts</CardDescription>
+                  </div>
+                  <Link href="/dashboard/collections/new">
+                    <Button size="sm">
+                      <Plus className="w-4 h-4 mr-2" />
+                      New Collection
+                    </Button>
+                  </Link>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12 text-muted-foreground">
-                  <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg mb-2">No charts yet</p>
-                  <p className="text-sm mb-4">
-                    Create your first chart to get started
-                  </p>
-                  <Button>Create Your First Chart</Button>
-                </div>
+                {collections.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <p className="text-lg mb-2">No collections yet</p>
+                    <p className="text-sm mb-4">
+                      Create your first collection to start tracking data
+                    </p>
+                    <Link href="/dashboard/collections/new">
+                      <Button>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create Your First Collection
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {collections.map((collection) => (
+                      <Card key={collection.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                              <div className="text-3xl flex-shrink-0">
+                                {collection.icon}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <CardTitle className="text-lg truncate">
+                                  {collection.name}
+                                </CardTitle>
+                                <CardDescription className="text-sm">
+                                  {collection._count.records} {collection._count.records === 1 ? 'record' : 'records'}
+                                </CardDescription>
+                              </div>
+                            </div>
+                            <Link
+                              href={`/dashboard/collections/${collection.id}/edit`}
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </Link>
+                          </div>
+                          {collection.description && (
+                            <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
+                              {collection.description}
+                            </p>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex gap-2">
+                            <Link href={`/dashboard/collections/${collection.id}`} className="flex-1">
+                              <Button variant="outline" size="sm" className="w-full">
+                                View Data
+                              </Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
