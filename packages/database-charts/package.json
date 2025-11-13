@@ -11,7 +11,12 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio"
+    "db:migrate:create": "prisma migrate dev --create-only",
+    "db:studio": "prisma studio",
+    "d1:push:dev": "wrangler d1 execute potato-charts-dev --remote --file=./prisma/migrations/$(ls -t prisma/migrations | head -1)/migration.sql",
+    "d1:push:prod": "wrangler d1 execute potato-charts --remote --file=./prisma/migrations/$(ls -t prisma/migrations | head -1)/migration.sql",
+    "d1:push:all:dev": "for file in prisma/migrations/*/migration.sql; do wrangler d1 execute potato-charts-dev --remote --file=\"$file\"; done",
+    "d1:push:all:prod": "for file in prisma/migrations/*/migration.sql; do wrangler d1 execute potato-charts --remote --file=\"$file\"; done"
   },
   "dependencies": {
     "@prisma/adapter-d1": "^6.1.0",

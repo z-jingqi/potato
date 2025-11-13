@@ -16,7 +16,13 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "db:generate": "pnpm --filter @potato/database-users db:generate && pnpm --filter @potato/database-charts db:generate",
+    "db:migrate": "pnpm --filter @potato/database-users db:migrate && pnpm --filter @potato/database-charts db:migrate",
+    "d1:push:dev": "pnpm --filter @potato/database-users d1:push:all:dev && pnpm --filter @potato/database-charts d1:push:all:dev",
+    "d1:push:prod": "pnpm --filter @potato/database-users d1:push:all:prod && pnpm --filter @potato/database-charts d1:push:all:prod",
+    "d1:setup:dev": "pnpm db:generate && pnpm d1:push:dev",
+    "d1:setup:prod": "pnpm db:generate && pnpm d1:push:prod"
   },
   "dependencies": {
     "@potato/ai": "workspace:*",
