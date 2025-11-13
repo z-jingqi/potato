@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@potato/ui/components/button";
 import { Input } from "@potato/ui/components/input";
 import { Label } from "@potato/ui/components/label";
@@ -90,6 +90,22 @@ export function CollectionForm({
     ]
   );
 
+  // Store initial state for comparison (memoized to prevent recreation)
+  const initialFormState = useMemo(() => ({
+    name: initialData?.name || "",
+    description: initialData?.description || "",
+    icon: initialData?.icon || "📊",
+    dateDimensions: initialData?.dateDimensions || "day" as DateDimension,
+    records: initialData?.records || [
+      {
+        id: crypto.randomUUID(),
+        recordDate: new Date().toISOString(),
+        data: "",
+        isNew: true,
+      },
+    ],
+  }), [initialData]);
+
   // Update form data when initialData changes (for edit mode)
   useEffect(() => {
     if (initialData) {
@@ -102,6 +118,35 @@ export function CollectionForm({
       setRecords(initialData.records);
     }
   }, [initialData]);
+
+  // Check if there are any changes (memoized for performance)
+  const hasChanges = useMemo(() => {
+    // Check basic form fields
+    if (formData.name !== initialFormState.name) return true;
+    if (formData.description !== initialFormState.description) return true;
+    if (formData.icon !== initialFormState.icon) return true;
+    if (dateDimensions !== initialFormState.dateDimensions) return true;
+
+    // Check records
+    const currentRecords = records.filter(r => !r.isDeleted);
+    const initialRecords = initialFormState.records.filter(r => !r.isDeleted);
+
+    if (currentRecords.length !== initialRecords.length) return true;
+
+    // Check if any record has been modified
+    if (records.some(r => r.isModified || r.isNew || r.isDeleted)) return true;
+
+    // Deep compare records
+    for (let i = 0; i < currentRecords.length; i++) {
+      const current = currentRecords[i];
+      const initial = initialRecords[i];
+      if (!current || !initial || current.recordDate !== initial.recordDate || current.data !== initial.data) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [formData, dateDimensions, records, initialFormState]);
 
   const addRecord = () => {
     setRecords([
@@ -145,6 +190,17 @@ export function CollectionForm({
       dateDimensions,
       records,
     });
+  };
+
+  const handleRevert = () => {
+    // Reset to initial state
+    setFormData({
+      name: initialFormState.name,
+      description: initialFormState.description,
+      icon: initialFormState.icon,
+    });
+    setDateDimensions(initialFormState.dateDimensions);
+    setRecords(initialFormState.records);
   };
 
   return (
@@ -227,53 +283,30 @@ export function CollectionForm({
         )}
       </div>
 
-      {/* Date Granularity Selector */}
-      <div className="space-y-2">
-        <Label>Date Granularity</Label>
-        <ToggleGroup
-          type="single"
-          value={dateDimensions}
-          onValueChange={(value) => {
-            if (value) setDateDimensions(value as DateDimension);
-          }}
-          className="justify-start"
-        >
-          <ToggleGroupItem value="year" aria-label="Year only">
-            Year
-          </ToggleGroupItem>
-          <ToggleGroupItem value="month" aria-label="Month">
-            Month
-          </ToggleGroupItem>
-          <ToggleGroupItem value="day" aria-label="Day">
-            Day
-          </ToggleGroupItem>
-          <ToggleGroupItem value="time" aria-label="Time">
-            Time
-          </ToggleGroupItem>
-        </ToggleGroup>
-        <p className="text-sm text-muted-foreground">
-          {dateDimensions === "year" && "Track data by year only"}
-          {dateDimensions === "month" && "Track data by year and month"}
-          {dateDimensions === "day" && "Track data by year, month, and day"}
-          {dateDimensions === "time" &&
-            "Track data with precise date and time (hour:minute)"}
-        </p>
-      </div>
-
       {/* Records Management */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label>{mode === "create" ? "Initial Data (optional)" : "Records"}</Label>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={addRecord}
-            disabled={isSubmitting}
+          <ToggleGroup
+            type="single"
+            value={dateDimensions}
+            onValueChange={(value) => {
+              if (value) setDateDimensions(value as DateDimension);
+            }}
           >
-            <Plus className="w-4 h-4 mr-1" />
-            Add Row
-          </Button>
+            <ToggleGroupItem value="year" aria-label="Year only" size="sm">
+              Year
+            </ToggleGroupItem>
+            <ToggleGroupItem value="month" aria-label="Month" size="sm">
+              Month
+            </ToggleGroupItem>
+            <ToggleGroupItem value="day" aria-label="Day" size="sm">
+              Day
+            </ToggleGroupItem>
+            <ToggleGroupItem value="time" aria-label="Time" size="sm">
+              Time
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
         <div className="border rounded-lg overflow-hidden">
           <div className="bg-muted px-3 py-2 grid grid-cols-12 gap-2 text-sm font-medium">
@@ -340,16 +373,32 @@ export function CollectionForm({
               ))}
           </div>
         </div>
-        <p className="text-sm text-muted-foreground">
-          {mode === "create"
-            ? "You can skip this and add data later, or add initial data points now"
-            : "Add, edit, or remove records. Changes will be saved when you click \"Save Changes\"."}
-        </p>
+        <div className="flex items-center justify-between">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addRecord}
+            disabled={isSubmitting}
+          >
+            <Plus className="w-4 h-4 mr-1" />
+            Add Row
+          </Button>
+          <p className="text-sm text-muted-foreground">
+            {mode === "create"
+              ? "You can skip this and add data later, or add initial data points now"
+              : "Add, edit, or remove records. Changes will be saved when you click \"Save Changes\"."}
+          </p>
+        </div>
       </div>
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-3 pt-4">
-        <Button type="submit" disabled={isSubmitting} className="sm:flex-1">
+        <Button
+          type="submit"
+          disabled={isSubmitting || (mode === "edit" && !hasChanges)}
+          className="sm:flex-1"
+        >
           {isSubmitting ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -364,8 +413,8 @@ export function CollectionForm({
         <Button
           type="button"
           variant="outline"
-          onClick={onCancel}
-          disabled={isSubmitting}
+          onClick={mode === "edit" ? handleRevert : onCancel}
+          disabled={isSubmitting || (mode === "edit" && !hasChanges)}
           className="sm:flex-1"
         >
           Cancel
