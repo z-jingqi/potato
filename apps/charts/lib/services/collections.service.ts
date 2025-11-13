@@ -4,12 +4,14 @@ export interface CreateCollectionInput {
   name: string;
   description?: string | null;
   icon?: string;
+  dateDimensions?: "year" | "month" | "day" | "time";
 }
 
 export interface UpdateCollectionInput {
   name?: string;
   description?: string | null;
   icon?: string;
+  dateDimensions?: "year" | "month" | "day" | "time";
 }
 
 export class CollectionsService {
@@ -82,6 +84,7 @@ export class CollectionsService {
         name: input.name.trim(),
         description: input.description?.trim() || null,
         icon: input.icon || "📊",
+        dateDimensions: input.dateDimensions || "day",
       },
     });
   }
@@ -125,6 +128,10 @@ export class CollectionsService {
 
     if (input.icon !== undefined) {
       updateData.icon = input.icon;
+    }
+
+    if (input.dateDimensions !== undefined) {
+      updateData.dateDimensions = input.dateDimensions;
     }
 
     return db.collection.update({

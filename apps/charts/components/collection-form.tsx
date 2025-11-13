@@ -6,6 +6,11 @@ import { Input } from "@potato/ui/components/input";
 import { Label } from "@potato/ui/components/label";
 import { Alert, AlertDescription } from "@potato/ui/components/alert";
 import { Loader2, Plus, X } from "lucide-react";
+import { DateTimePicker, type DateDimension } from "./date-time-picker";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@potato/ui/components/toggle-group";
 
 const ICON_OPTIONS = [
   "📊",
@@ -43,6 +48,7 @@ interface CollectionFormData {
   name: string;
   description: string;
   icon: string;
+  dateDimensions: DateDimension;
   records: RecordRow[];
 }
 
@@ -69,11 +75,15 @@ export function CollectionForm({
     icon: initialData?.icon || "📊",
   });
 
+  const [dateDimensions, setDateDimensions] = useState<DateDimension>(
+    initialData?.dateDimensions || "day"
+  );
+
   const [records, setRecords] = useState<RecordRow[]>(
     initialData?.records || [
       {
         id: crypto.randomUUID(),
-        recordDate: new Date().toISOString().split("T")[0]!,
+        recordDate: new Date().toISOString(),
         data: "",
         isNew: true,
       },
@@ -88,6 +98,7 @@ export function CollectionForm({
         description: initialData.description,
         icon: initialData.icon,
       });
+      setDateDimensions(initialData.dateDimensions);
       setRecords(initialData.records);
     }
   }, [initialData]);
@@ -97,7 +108,7 @@ export function CollectionForm({
       ...records,
       {
         id: crypto.randomUUID(),
-        recordDate: new Date().toISOString().split("T")[0]!,
+        recordDate: new Date().toISOString(),
         data: "",
         isNew: true,
       },
@@ -131,6 +142,7 @@ export function CollectionForm({
     e.preventDefault();
     await onSubmit({
       ...formData,
+      dateDimensions,
       records,
     });
   };
@@ -187,7 +199,7 @@ export function CollectionForm({
         />
         {mode === "create" && (
           <p className="text-sm text-muted-foreground">
-            Choose a clear, descriptive name for your collection
+            Choose a clear, descriptive name for your chart
           </p>
         )}
       </div>
@@ -210,9 +222,42 @@ export function CollectionForm({
         />
         {mode === "create" && (
           <p className="text-sm text-muted-foreground">
-            Add notes about what you&apos;ll track in this collection
+            Add notes about what you&apos;ll track in this chart
           </p>
         )}
+      </div>
+
+      {/* Date Granularity Selector */}
+      <div className="space-y-2">
+        <Label>Date Granularity</Label>
+        <ToggleGroup
+          type="single"
+          value={dateDimensions}
+          onValueChange={(value) => {
+            if (value) setDateDimensions(value as DateDimension);
+          }}
+          className="justify-start"
+        >
+          <ToggleGroupItem value="year" aria-label="Year only">
+            Year
+          </ToggleGroupItem>
+          <ToggleGroupItem value="month" aria-label="Month">
+            Month
+          </ToggleGroupItem>
+          <ToggleGroupItem value="day" aria-label="Day">
+            Day
+          </ToggleGroupItem>
+          <ToggleGroupItem value="time" aria-label="Time">
+            Time
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <p className="text-sm text-muted-foreground">
+          {dateDimensions === "year" && "Track data by year only"}
+          {dateDimensions === "month" && "Track data by year and month"}
+          {dateDimensions === "day" && "Track data by year, month, and day"}
+          {dateDimensions === "time" &&
+            "Track data with precise date and time (hour:minute)"}
+        </p>
       </div>
 
       {/* Records Management */}
@@ -251,13 +296,12 @@ export function CollectionForm({
                   }`}
                 >
                   <div className="col-span-4">
-                    <Input
-                      type="date"
+                    <DateTimePicker
                       value={record.recordDate}
-                      onChange={(e) =>
-                        updateRecord(record.id, "recordDate", e.target.value)
+                      onChange={(value) =>
+                        updateRecord(record.id, "recordDate", value)
                       }
-                      className="text-sm h-9"
+                      dimension={dateDimensions}
                       disabled={isSubmitting}
                     />
                   </div>
@@ -312,7 +356,7 @@ export function CollectionForm({
               {mode === "create" ? "Creating..." : "Saving..."}
             </>
           ) : mode === "create" ? (
-            "Create Collection"
+            "Create Chart"
           ) : (
             "Save Changes"
           )}

@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { CollectionResponse } from "@/lib/types/api";
+import { CollectionChart } from "@/components/collection-chart";
+import type { DateDimension } from "@/components/date-time-picker";
 
 export default function CollectionViewPage() {
   const params = useParams<{ id: string }>();
@@ -246,7 +248,7 @@ export default function CollectionViewPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Loading collection...</p>
+          <p className="text-muted-foreground">Loading chart...</p>
         </div>
       </div>
     );
@@ -257,7 +259,7 @@ export default function CollectionViewPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground mb-2">
-            {error ? error.message : "Collection not found"}
+            {error ? error.message : "Chart not found"}
           </p>
           <Link href="/dashboard">
             <Button className="mt-4">Back to Dashboard</Button>
@@ -309,7 +311,7 @@ export default function CollectionViewPage() {
           <Link href={`/dashboard/collections/${collection.id}/edit`}>
             <Button variant="outline">
               <Edit2 className="w-4 h-4 mr-2" />
-              Edit Collection
+              Edit Chart
             </Button>
           </Link>
         </div>
@@ -319,6 +321,15 @@ export default function CollectionViewPage() {
             <AlertDescription>{actionError}</AlertDescription>
           </Alert>
         )}
+
+        {/* Chart Visualization */}
+        <div className="mb-6">
+          <CollectionChart
+            records={collection.records}
+            collectionName={collection.name}
+            dateDimension={(collection.dateDimensions || "day") as DateDimension}
+          />
+        </div>
 
         {/* Add Record Section */}
         <Card className="mb-6">

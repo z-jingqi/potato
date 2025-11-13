@@ -5,12 +5,14 @@ export interface CreateCollectionRequest {
   name: string;
   description?: string;
   icon?: string;
+  dateDimensions?: "year" | "month" | "day" | "time";
 }
 
 export interface UpdateCollectionRequest {
   name?: string;
   description?: string;
   icon?: string;
+  dateDimensions?: "year" | "month" | "day" | "time";
 }
 
 export interface CreateRecordRequest {

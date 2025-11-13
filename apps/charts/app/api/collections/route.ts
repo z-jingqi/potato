@@ -36,11 +36,11 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json() as CreateCollectionRequest;
-    const { name, description, icon } = body;
+    const { name, description, icon, dateDimensions } = body;
 
     const collection = await CollectionsService.createCollection(
       session.user.id,
-      { name, description, icon }
+      { name, description, icon, dateDimensions }
     );
 
     return NextResponse.json({ collection }, { status: 201 });

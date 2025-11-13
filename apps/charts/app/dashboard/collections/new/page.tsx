@@ -15,6 +15,7 @@ import Link from "next/link";
 import { postFetcher } from "@/lib/swr/fetcher";
 import type { CollectionResponse, CreateCollectionRequest } from "@/lib/types/api";
 import { CollectionForm } from "@/components/collection-form";
+import type { DateDimension } from "@/components/date-time-picker";
 
 export default function NewCollectionPage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function NewCollectionPage() {
     name: string;
     description: string;
     icon: string;
+    dateDimensions: DateDimension;
     records: Array<{
       id: string;
       recordDate: string;
@@ -42,20 +44,21 @@ export default function NewCollectionPage() {
     setError("");
 
     if (!formData.name.trim()) {
-      setError("Please enter a collection name");
+      setError("Please enter a chart name");
       return;
     }
 
     try {
-      // Create collection first
+      // Create chart first
       const result = await trigger({
         name: formData.name,
         description: formData.description,
         icon: formData.icon,
+        dateDimensions: formData.dateDimensions,
       });
 
       if (!result) {
-        throw new Error("Failed to create collection");
+        throw new Error("Failed to create chart");
       }
 
       // Filter out empty records and create them if any
@@ -116,17 +119,17 @@ export default function NewCollectionPage() {
       {/* Main Content */}
       <main className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold mb-2">Create New Collection</h2>
+          <h2 className="text-3xl font-bold mb-2">Create New Chart</h2>
           <p className="text-muted-foreground">
-            Collections help you organize and track your data over time
+            Charts help you organize and track your data over time
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Collection Details</CardTitle>
+            <CardTitle>Chart Details</CardTitle>
             <CardDescription>
-              Give your collection a name and choose an icon
+              Give your chart a name and choose an icon
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -22,6 +22,7 @@ import type {
   SuccessResponse,
 } from "@/lib/types/api";
 import { CollectionForm } from "@/components/collection-form";
+import type { DateDimension } from "@/components/date-time-picker";
 
 export default function EditCollectionPage() {
   const router = useRouter();
@@ -65,6 +66,7 @@ export default function EditCollectionPage() {
     name: string;
     description: string;
     icon: string;
+    dateDimensions: DateDimension;
     records: Array<{
       id: string;
       recordDate: string;
@@ -77,18 +79,19 @@ export default function EditCollectionPage() {
     setActionError("");
 
     if (!formData.name.trim()) {
-      setActionError("Please enter a collection name");
+      setActionError("Please enter a chart name");
       return;
     }
 
     setIsSavingAll(true);
 
     try {
-      // 1. Update collection metadata
+      // 1. Update chart metadata
       await updateTrigger({
         name: formData.name,
         description: formData.description,
         icon: formData.icon,
+        dateDimensions: formData.dateDimensions,
       });
 
       // 2. Handle record changes
@@ -183,7 +186,7 @@ export default function EditCollectionPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Loading collection...</p>
+          <p className="text-muted-foreground">Loading chart...</p>
         </div>
       </div>
     );
@@ -194,7 +197,7 @@ export default function EditCollectionPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground mb-2">
-            {error ? error.message : "Collection not found"}
+            {error ? error.message : "Chart not found"}
           </p>
           <Link href="/dashboard">
             <Button className="mt-4">Back to Dashboard</Button>
@@ -208,9 +211,10 @@ export default function EditCollectionPage() {
     name: collection.name,
     description: collection.description || "",
     icon: collection.icon || "📊",
+    dateDimensions: (collection.dateDimensions || "day") as DateDimension,
     records: collection.records.map((record) => ({
       id: record.id,
-      recordDate: new Date(record.recordDate).toISOString().split("T")[0]!,
+      recordDate: new Date(record.recordDate).toISOString(),
       data: record.data,
       isNew: false,
       isDeleted: false,
@@ -246,15 +250,15 @@ export default function EditCollectionPage() {
       {/* Main Content */}
       <main className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold mb-2">Edit Collection</h2>
+          <h2 className="text-3xl font-bold mb-2">Edit Chart</h2>
           <p className="text-muted-foreground">
-            Update your collection details
+            Update your chart details
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Collection Details</CardTitle>
+            <CardTitle>Chart Details</CardTitle>
             <CardDescription>
               Update the name, description, or icon
             </CardDescription>
@@ -276,7 +280,7 @@ export default function EditCollectionPage() {
           <CardHeader>
             <CardTitle className="text-destructive">Danger Zone</CardTitle>
             <CardDescription>
-              Permanently delete this collection and all its data
+              Permanently delete this chart and all its data
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -288,14 +292,14 @@ export default function EditCollectionPage() {
                 className="w-full sm:w-auto"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                Delete Collection
+                Delete Chart
               </Button>
             ) : (
               <div className="space-y-4">
                 <Alert variant="destructive">
                   <AlertDescription>
                     Are you sure? This action cannot be undone. All records in
-                    this collection will be permanently deleted.
+                    this chart will be permanently deleted.
                   </AlertDescription>
                 </Alert>
                 <div className="flex flex-col sm:flex-row gap-3">

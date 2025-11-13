@@ -12,16 +12,17 @@ datasource db {
 
 // 数据集合/项目
 model Collection {
-  id          String   @id @default(uuid())
-  userId      String
-  name        String
-  description String?
-  icon        String?
-  
-  records     Record[]
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(uuid())
+  userId         String
+  name           String
+  description    String?
+  icon           String?
+  dateDimensions String   @default("day") // "year" | "month" | "day" | "time"
+
+  records        Record[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([userId])
   @@map("collections")

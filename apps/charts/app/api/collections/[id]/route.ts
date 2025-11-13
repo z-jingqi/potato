@@ -48,12 +48,12 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json() as UpdateCollectionRequest;
-    const { name, description, icon } = body;
+    const { name, description, icon, dateDimensions } = body;
 
     const collection = await CollectionsService.updateCollection(
       id,
       session.user.id,
-      { name, description, icon }
+      { name, description, icon, dateDimensions }
     );
 
     return NextResponse.json({ collection });

@@ -135,19 +135,19 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Collections List */}
+          {/* Charts List */}
           <div className="mt-8">
             <Card>
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
-                    <CardTitle>My Collections</CardTitle>
-                    <CardDescription>Your data collections and charts</CardDescription>
+                    <CardTitle>My Charts</CardTitle>
+                    <CardDescription>Your charts and data visualizations</CardDescription>
                   </div>
                   <Link href="/dashboard/collections/new">
                     <Button size="sm">
                       <Plus className="w-4 h-4 mr-2" />
-                      New Collection
+                      New Chart
                     </Button>
                   </Link>
                 </div>
@@ -156,14 +156,14 @@ export default async function DashboardPage() {
                 {collections.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
                     <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg mb-2">No collections yet</p>
+                    <p className="text-lg mb-2">No charts yet</p>
                     <p className="text-sm mb-4">
-                      Create your first collection to start tracking data
+                      Create your first chart to start tracking data
                     </p>
                     <Link href="/dashboard/collections/new">
                       <Button>
                         <Plus className="w-4 h-4 mr-2" />
-                        Create Your First Collection
+                        Create Your First Chart
                       </Button>
                     </Link>
                   </div>
