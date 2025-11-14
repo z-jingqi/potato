@@ -2,6 +2,8 @@ import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from './utils';
 import type { UsersDatabase } from '@potato/database-users';
+import { eq } from 'drizzle-orm';
+import { users } from '@potato/database-users';
 
 declare module 'next-auth' {
   interface Session {
@@ -36,9 +38,11 @@ export function createAuthConfig(context: AuthContext): NextAuthOptions {
             return null;
           }
 
-          const user = await context.db.user.findUnique({
-            where: { username: credentials.username },
-          });
+          const [user] = await context.db
+            .select()
+            .from(users)
+            .where(eq(users.username, credentials.username))
+            .limit(1);
 
           if (!user) {
             return null;

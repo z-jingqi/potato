@@ -9,9 +9,9 @@
     "./utils": "./src/utils.ts"
   },
   "dependencies": {
-    "@next-auth/prisma-adapter": "^1.0.7",
     "@potato/database-users": "workspace:*",
     "bcryptjs": "^2.4.3",
+    "drizzle-orm": "^0.44.7",
     "next-auth": "^4"
   },
   "devDependencies": {

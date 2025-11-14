@@ -2,7 +2,7 @@ import { getUsersDb } from '@potato/database-users/client';
 import { getChartsDb } from '@potato/database-charts/client';
 
 // Get D1 database bindings from Cloudflare Workers environment
-// For local development, these will be undefined and Prisma will use DATABASE_URL
+// For local development, these will be undefined and Drizzle will use DATABASE_URL
 function getD1Binding(name: string): D1Database | undefined {
   if (typeof process !== 'undefined' && process.env) {
     return (process.env as any)[name] as D1Database | undefined;

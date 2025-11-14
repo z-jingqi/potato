@@ -12,7 +12,7 @@ Added path mappings in `apps/charts/tsconfig.json` for all `@potato/*` packages:
 ### Next.js Configuration
 Updated `apps/charts/next.config.mjs`:
 - Added all `@potato/*` packages to `transpilePackages`
-- Added Prisma packages to `serverComponentsExternalPackages`
+- Added Drizzle packages to `serverComponentsExternalPackages`
 
 ## Package Structure
 
@@ -56,8 +56,12 @@ pnpm dev
 ## Database Files
 
 Local SQLite databases are stored at:
-- `packages/database-users/prisma/dev.db`
-- `packages/database-charts/prisma/dev.db`
+- `packages/database-users/db/dev.db` (users & authentication)
+- `packages/database-charts/db/dev.db` (collections, records & AI analysis)
+
+The project uses **Drizzle ORM** with support for both:
+- Local development: SQLite via better-sqlite3
+- Production: Cloudflare D1
 
 ## Environment Variables
 

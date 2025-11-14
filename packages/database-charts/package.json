@@ -8,18 +8,19 @@
     "./client": "./src/client.ts"
   },
   "scripts": {
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio"
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@prisma/adapter-d1": "^6.1.0",
-    "@prisma/client": "^6.1.0"
+    "better-sqlite3": "^12.4.1",
+    "drizzle-orm": "^0.44.7"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@workspace/typescript-config": "workspace:*",
-    "prisma": "^6.1.0",
+    "drizzle-kit": "^0.31.7",
     "typescript": "^5.9.2"
   }
 }

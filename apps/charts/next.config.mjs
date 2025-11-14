@@ -7,7 +7,7 @@ const nextConfig = {
     "@potato/auth",
     "@potato/ai"
   ],
-  serverExternalPackages: ['@prisma/client', '@prisma/adapter-d1'],
+  serverExternalPackages: ['better-sqlite3'],
 };
 
 export default nextConfig;

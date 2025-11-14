@@ -1,2 +1,2 @@
-export * from './generated/client-users';
+export * from './schema';
 export * from './client';

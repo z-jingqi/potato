@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUsersDatabase } from '@/lib/db';
 import { hashPassword } from '@potato/auth/utils';
+import { eq } from 'drizzle-orm';
+import { users } from '@potato/database-users';
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,9 +34,11 @@ export async function POST(request: NextRequest) {
     const db = getUsersDatabase();
 
     // Check if user already exists
-    const existingUser = await db.user.findUnique({
-      where: { username },
-    });
+    const [existingUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username))
+      .limit(1);
 
     if (existingUser) {
       return NextResponse.json(
@@ -46,17 +50,13 @@ export async function POST(request: NextRequest) {
     // Hash password and create user
     const passwordHash = await hashPassword(password);
 
-    const newUser = await db.user.create({
-      data: {
+    const [newUser] = await db
+      .insert(users)
+      .values({
         username,
         passwordHash,
-      },
-      select: {
-        id: true,
-        username: true,
-        createdAt: true,
-      },
-    });
+      })
+      .returning();
 
     return NextResponse.json(
       { message: 'User created successfully', user: newUser },
