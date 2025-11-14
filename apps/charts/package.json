@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "build:cf": "npx opennextjs-cloudflare",
+    "build:cf": "npx opennextjs-cloudflare build",
     "start": "next start",
-    "preview:cf": "wrangler dev --experimental-local",
+    "preview:cf": "wrangler dev --remote",
     "deploy:cf": "wrangler deploy",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
