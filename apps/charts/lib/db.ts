@@ -16,7 +16,7 @@ function getD1Binding(name: string): D1Database | undefined {
     // getCloudflareContext throws during local builds / tests where no context exists.
   }
 
-  // Fallback for local development where Prisma uses DATABASE_URL_* SQLite files.
+  // Fallback for local development where Drizzle uses DATABASE_URL_* SQLite files.
   if (typeof process !== 'undefined' && process.env) {
     return (process.env as unknown as Record<string, D1Database | undefined>)[name];
   }
