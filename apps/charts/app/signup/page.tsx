@@ -1,11 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Button } from '@potato/ui/components/button';
-import { Input } from '@potato/ui/components/input';
-import { Label } from '@potato/ui/components/label';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { Button } from "@potato/ui/components/button";
+import { Input } from "@potato/ui/components/input";
+import { PasswordInput } from "@potato/ui/components/password-input";
+import { Label } from "@potato/ui/components/label";
 import {
   Card,
   CardContent,
@@ -13,34 +15,34 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@potato/ui/components/card';
-import { Alert, AlertDescription } from '@potato/ui/components/alert';
+} from "@potato/ui/components/card";
+import { Alert, AlertDescription } from "@potato/ui/components/alert";
 
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    confirmPassword: '',
+    username: "",
+    password: "",
+    confirmPassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: formData.username,
           password: formData.password,
@@ -50,19 +52,31 @@ export default function SignupPage() {
       const data = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        setError(data.error || 'Signup failed');
+        setError(data.error || "Signup failed");
       } else {
-        router.push('/login?signup=success');
+        // Auto sign in after successful signup
+        const result = await signIn("credentials", {
+          username: formData.username,
+          password: formData.password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          setError("Account created but login failed. Please try logging in.");
+          router.push("/login");
+        } else {
+          router.push("/dashboard");
+        }
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
@@ -101,9 +115,8 @@ export default function SignupPage() {
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 placeholder="Choose a password"
                 required
                 minLength={6}
@@ -120,9 +133,8 @@ export default function SignupPage() {
 
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 placeholder="Confirm your password"
                 required
                 value={formData.confirmPassword}
@@ -134,13 +146,13 @@ export default function SignupPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creating account...' : 'Sign up'}
+              {loading ? "Creating account..." : "Sign up"}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center text-muted-foreground">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link
               href="/login"
               className="text-primary hover:underline font-medium"

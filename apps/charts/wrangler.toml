@@ -5,6 +5,14 @@ compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 assets = { directory = ".open-next/assets", binding = "ASSETS" }
 
+[vars]
+# Update to your production domain before deploying.
+NEXTAUTH_URL = "https://potato-charts.pineappleq16.workers.dev/"
+NEXTJS_ENV = "production"
+# Secrets required at runtime (set via `wrangler secret put ...`):
+# - AUTH_SECRET (NextAuth)
+# - OPENROUTER_API_KEY (AI route)
+
 # D1 Database bindings
 # Production environment (default)
 # Shared Users database (used by both diet and charts apps)

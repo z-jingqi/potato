@@ -11,7 +11,11 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "d1:push:dev": "wrangler d1 execute potato-charts-dev --remote --file=./prisma/migrations/$(ls -t prisma/migrations | head -1)/migration.sql",
+    "d1:push:prod": "wrangler d1 execute potato-charts --remote --file=./prisma/migrations/$(ls -t prisma/migrations | head -1)/migration.sql",
+    "d1:push:all:dev": "for file in prisma/migrations/*/migration.sql; do wrangler d1 execute potato-charts-dev --remote --file=\"$file\"; done",
+    "d1:push:all:prod": "for file in prisma/migrations/*/migration.sql; do wrangler d1 execute potato-charts --remote --file=\"$file\"; done"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",

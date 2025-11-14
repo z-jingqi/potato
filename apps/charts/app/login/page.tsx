@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Button } from '@potato/ui/components/button';
-import { Input } from '@potato/ui/components/input';
-import { Label } from '@potato/ui/components/label';
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@potato/ui/components/button";
+import { Input } from "@potato/ui/components/input";
+import { PasswordInput } from "@potato/ui/components/password-input";
+import { Label } from "@potato/ui/components/label";
 import {
   Card,
   CardContent,
@@ -14,42 +15,42 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@potato/ui/components/card';
-import { Alert, AlertDescription } from '@potato/ui/components/alert';
+} from "@potato/ui/components/card";
+import { Alert, AlertDescription } from "@potato/ui/components/alert";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         username: formData.username,
         password: formData.password,
         redirect: false,
       });
 
       if (result?.error) {
-        setError('Invalid username or password');
+        setError("Invalid username or password");
       } else {
-        router.push('/dashboard');
+        router.push("/dashboard");
         router.refresh();
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
@@ -84,9 +85,8 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 placeholder="Enter your password"
                 required
                 value={formData.password}
@@ -98,13 +98,13 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center text-muted-foreground">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link
               href="/signup"
               className="text-primary hover:underline font-medium"

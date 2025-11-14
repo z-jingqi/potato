@@ -1,3 +1,10 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
+if (process.env.NODE_ENV !== "production") {
+  // Makes the Cloudflare context (D1, KV, etc.) available during `next dev`.
+  initOpenNextCloudflareForDev();
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: [
